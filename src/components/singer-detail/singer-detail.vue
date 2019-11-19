@@ -31,9 +31,9 @@
           <song-list @select="selectItem" :songs="listDetail"></song-list>
         </div>
       </div>
-      <div class="loading-content">
-        <loading></loading>
-      </div>
+<!--      <div class="loading-content">-->
+<!--        <loading></loading>-->
+<!--      </div>-->
     </scroll>
   </div>
 </transition>
@@ -42,11 +42,10 @@
 <script>
 import Scroll from 'base/scroll/scroll'
 import SongList from 'base/song-list/song-list'
-import Loading from 'base/loading/loading'
+// import Loading from 'base/loading/loading'
 import {mapGetters, mapActions} from 'vuex'
 import {ERR_OK} from 'common/js/config'
 import {playlistMixin} from 'common/js/mixin'
-import {getSingerDetail} from 'api/singer'
 import {createSong} from 'common/js/song'
 
 const RESERVED_HEIGHT = 44
@@ -105,7 +104,7 @@ export default {
       if (!this.singer.id) {
         this.$router.push('/singer')
       }
-      getSingerDetail(this.singer.id).then((res) => {
+      this.$store.dispatch('getSingerDetail', this.singer.id).then((res) => {
         if (res.status === ERR_OK) {
           this.node = res.data.hotSongs
         }
@@ -165,8 +164,8 @@ export default {
   },
   components: {
     SongList,
-    Scroll,
-    Loading
+    Scroll
+    // Loading
   }
 }
 </script>

@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import MHeader from 'cpnts/m-header/m-header'
-import Tab from 'cpnts/tab/tab'
-import Player from 'cpnts/player/player'
+import MHeader from 'components/m-header/m-header'
+import Tab from 'components/tab/tab'
+import Player from 'components/player/player'
 
 export default {
   // 这里的代码除了 components，其他的都是用来解决 移动端需不能自动播放的问题

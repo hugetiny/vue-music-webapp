@@ -1,60 +1,54 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Singer from 'cpnts/singer/singer'
-// import Recommend from 'cpnts/recommend/recommend'
-// import Rank from 'cpnts/rank/rank'
-// import Search from 'cpnts/search/search'
-// import MusicList from 'cpnts/music-list/music-list'
-// import SingerDetail from 'cpnts/singer-detail/singer-detail'
-// import RankDetail from 'cpnts/rank-detail/rank-detail'
-// import User from 'cpnts/user/user'
+// import Singer from 'components/singer/singer'
+// import Recommend from 'components/recommend/recommend'
+// import Rank from 'components/rank/rank'
+// import Search from 'components/search/search'
+// import MusicList from 'components/music-list/music-list'
+// import SingerDetail from 'components/singer-detail/singer-detail'
+// import RankDetail from 'components/rank-detail/rank-detail'
+// import User from 'components/user/user'
 
 Vue.use(Router)
 
-const Recommend = (resolve) => {
-  import('cpnts/recommend/recommend').then((module) => {
-    resolve(module)
-  })
-}
-
 const Singer = (resolve) => {
-  import('cpnts/singer/singer').then((module) => {
+  import('components/singer/singer').then((module) => {
     resolve(module)
   })
 }
 
 const Rank = (resolve) => {
-  import('cpnts/rank/rank').then((module) => {
+  import('components/rank/rank').then((module) => {
     resolve(module)
   })
 }
 
 const Search = (resolve) => {
-  import('cpnts/search/search').then((module) => {
+  import('components/search/search').then((module) => {
     resolve(module)
   })
 }
 
 const SingerDetail = (resolve) => {
-  import('cpnts/singer-detail/singer-detail').then((module) => {
+  import('components/singer-detail/singer-detail').then((module) => {
     resolve(module)
   })
 }
 
 const MusicList = (resolve) => {
-  import('cpnts/music-list/music-list').then((module) => {
+  import('components/music-list/music-list').then((module) => {
     resolve(module)
   })
 }
 
 const RankDetail = (resolve) => {
-  import('cpnts/rank-detail/rank-detail').then((module) => {
+  import('components/rank-detail/rank-detail').then((module) => {
     resolve(module)
   })
 }
 
 const User = (resolve) => {
-  import('cpnts/user/user').then((module) => {
+  import('components/user/user').then((module) => {
     resolve(module)
   })
 }
@@ -68,7 +62,7 @@ export default new Router({
     },
     {
       path: '/recommend',
-      component: Recommend,
+      component: () => import('components/recommend/recommend'),
       children: [
         {
           path: ':id',

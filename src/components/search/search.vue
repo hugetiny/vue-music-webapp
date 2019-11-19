@@ -5,14 +5,14 @@
         <i class="fa fa-angle-left" @click="back"></i>
         <search-box @query="onQueryChange" ref="searchBox"></search-box>
       </div>
-      <scroll class="search-scroll-wrapper" ref="scroll" :pullup="pullup" @scrollToEnd="searchMore">
+      <scroll class="search-scroll-wrapper" ref="scroll" :pullup="pullup" @scrollToEnd="search">
         <div ref="search">
-          <div class="search-hots" v-show="!query">
-            <p class="title">热门搜索</p>
-            <span class="search-hots-item" v-for="item in hots" :key="item.id" @click="addQuery(item.first)">
-              {{item.first}}
-            </span>
-          </div>
+<!--          <div class="search-hots" v-show="!query">-->
+<!--            <p class="title">热门搜索</p>-->
+<!--            <span class="search-hots-item" v-for="item in hots" :key="item.id" @click="addQuery(item.first)">-->
+<!--              {{item.first}}-->
+<!--            </span>-->
+<!--          </div>-->
           <div class="shortcut-wrapper" v-show="!query">
             <div class="search-history" v-show="searchHistory.length">
               <h1 class="title">
@@ -38,22 +38,22 @@
 <script>
 import Scroll from 'base/scroll/scroll'
 import SearchBox from 'base/search-box/search-box'
-import Suggest from 'cpnts/suggest/suggest'
+import Suggest from 'components/suggest/suggest'
 import Confirm from 'base/confirm/confirm'
 import SearchList from 'base/search-list/search-list'
 import {searchMixin, playlistMixin} from 'common/js/mixin'
-import {getSearchHot} from 'api/search'
+// import {getSearchHot} from 'api/search'
 
 export default {
   mixins: [searchMixin, playlistMixin],
   data () {
     return {
-      pullup: true,
-      hots: []
+      pullup: true
+      // hots: []
     }
   },
   created () {
-    this._getSearchHot()
+    // this._getSearchHot()
   },
   methods: {
     back () {
@@ -63,12 +63,12 @@ export default {
     showConfirm () {
       this.$refs.confirm.show()
     },
-    _getSearchHot () {
-      getSearchHot().then((res) => {
-        this.hots = res.data.result.hots
-        // console.log(this.hots)
-      })
-    },
+    // _getSearchHot () {
+    //   getSearchHot().then((res) => {
+    //     this.hots = res.data.result.hots
+    //     // console.log(this.hots)
+    //   })
+    // },
     onQueryChange (query) {
       this.query = query
     },
@@ -78,8 +78,8 @@ export default {
     saveSearch () {
       this.saveSearchHistory(this.query)
     },
-    searchMore () {
-      this.$refs.suggest.searchMore()
+    search () {
+      this.$refs.suggest.search()
     },
     refresh () {
       setTimeout(() => {

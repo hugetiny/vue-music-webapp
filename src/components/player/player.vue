@@ -98,9 +98,8 @@ import ProgressCircle from 'base/progress-circle/progress-circle'
 import ProgressBar from 'base/progress-bar/progress-bar'
 import Lyric from 'lyric-parser'
 import Scroll from 'base/scroll/scroll'
-import Playlist from 'cpnts/playlist/playlist'
+import Playlist from 'components/playlist/playlist'
 import {mapGetters, mapMutations, mapActions} from 'vuex'
-import {getSong, getLyric} from 'api/song'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/utl'
 
@@ -361,7 +360,8 @@ export default {
       }
     },
     _getSong (id) {
-      getSong(id).then((res) => {
+      console.log(id)
+      this.$store.dispatch('getSong', id).then((res) => {
         this.url = res.data.data[0].url
       })
     },
@@ -371,11 +371,11 @@ export default {
         this.currentLyric = null
       }
       this.noLyric = false
-      getLyric(id).then((res) => {
+      this.$store.dispatch('getLyric', id).then((res) => {
         this.currentLyric = new Lyric(res.data.lrc.lyric, this.handleLyric)
         if (this.playing) {
           this.currentLyric.play()
-          // 歌词重载以后 高亮行设置为 0
+          console.log('歌词重载以后 高亮行设置为 0')
           this.currentLineNum = 0
           this.$refs.lyricList.scrollTo(0, 0, 1000)
         }

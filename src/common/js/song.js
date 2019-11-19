@@ -22,7 +22,7 @@ function singerName (arr) {
   return name.join('/')
 }
 
-export function createRecommendSong (music) {
+export function newSong (music) {
   return new Song({
     id: music.id,
     singer: singerName(music.song.artists),
@@ -33,14 +33,14 @@ export function createRecommendSong (music) {
   })
 }
 
-export function createRecommendListSong (music) {
+export function personalized (music) {
   return new Song({
     id: music.id,
-    singer: singerName(music.artists),
+    singer: singerName(music.ar),
     name: music.name,
     // aliaName: music.song.alias.join('-'),
-    album: music.album.name,
-    image: music.album.picUrl
+    album: music.al.name,
+    image: music.al.picUrl
   })
 }
 
@@ -56,12 +56,15 @@ export function createSong (music) {
 }
 
 export function createSearchSong (music) {
+  // 新接口
+  console.log(music)
   return new Song({
     id: music.id,
     singer: singerName(music.artists),
     name: music.name,
     // aliaName: filiterAliaName(music.alias),
     album: music.album.name
+    // source:
     // image: `http://p1.music.126.net/-2o0OyBFtfCCoBqL1Q-TjA==/${music.album.picId}.jpg`
     // // url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songid}.m4a?vkey=${getUrl(musicData.songid)}&guid=3304491888&uin=0&fromtag=66`
   })

@@ -8,7 +8,6 @@
 <script>
 import Singer from 'common/js/singer'
 import ListView from 'base/listview/listview'
-import {getSingers} from 'src/api/singer'
 import {playlistMixin} from 'common/js/mixin'
 import {mapMutations} from 'vuex'
 
@@ -39,7 +38,7 @@ export default {
       this.$refs.list.refresh()
     },
     _getSingers () {
-      getSingers().then((res) => {
+      this.$store.dispatch('getSingers').then((res) => {
         let s = res.data.artists
         s.map((item) => {
           let py = pinyin(item.name[0], {

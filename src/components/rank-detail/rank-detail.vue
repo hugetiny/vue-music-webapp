@@ -34,9 +34,9 @@
           <song-list @select="selectItem" :songs="listDetail"></song-list>
         </div>
       </div>
-      <div v-show="!listDetail.length" class="loading-content">
-        <loading></loading>
-      </div>
+<!--      <div v-show="!listDetail.length" class="loading-content">-->
+<!--        <loading></loading>-->
+<!--      </div>-->
     </scroll>
   </div>
 </transition>
@@ -44,7 +44,7 @@
 
 <script>
 import Scroll from 'base/scroll/scroll'
-import Loading from 'base/loading/loading'
+// import Loading from 'base/loading/loading'
 import SongList from 'base/song-list/song-list'
 import {mapGetters, mapActions} from 'vuex'
 import {playlistMixin} from 'common/js/mixin'
@@ -155,8 +155,8 @@ export default {
   },
   components: {
     SongList,
-    Scroll,
-    Loading
+    Scroll
+    // Loading
   }
 }
 </script>

@@ -17,18 +17,17 @@
       <!-- <div class="loading-container" v-show="!yunTopList.length">
         <loading></loading>
       </div> -->
-      <div v-show="showLoading" class="loading-content">
-        <loading></loading>
-      </div>
+<!--      <div v-show="showLoading" class="loading-content">-->
+<!--        <loading></loading>-->
+<!--      </div>-->
     </scroll>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import {getTop} from 'api/rank'
+
 import Scroll from 'base/scroll/scroll'
-import Loading from 'base/loading/loading'
 // import Loading from 'base/loading/loading'
 import {playlistMixin} from 'common/js/mixin'
 import {mapMutations} from 'vuex'
@@ -39,12 +38,22 @@ export default {
   mixins: [playlistMixin],
   data () {
     return {
-      yunTopList: [],
+      // yunTopList: [],
       showLoading: true
     }
   },
   created () {
-    this._getTopList()
+    if (this.$store.state.apis.yunTopList.length === 0) {
+      for (let i = 0; i < YUNMUSIC_TOP.length; i++) {
+        this.$store.dispatch('getTop', YUNMUSIC_TOP[i])
+      }
+    }
+    this.showLoading = false
+  },
+  computed: {
+    yunTopList () {
+      return this.$store.state.apis.yunTopList
+    }
   },
   methods: {
     selectItem (item) {
@@ -58,26 +67,26 @@ export default {
       this.$refs.rank.style.bottom = bottom
       this.$refs.scroll.refresh()
     },
-    _getTopList () {
-      for (let i = 0; i < YUNMUSIC_TOP.length; i++) {
-        getTop(YUNMUSIC_TOP[i]).then((res) => {
-          let list = res.data.playlist
-          list.top = res.data.playlist.tracks.slice(0, 3)
-          this.yunTopList.push(list)
-          // console.log(list)
-        })
-        if (i === YUNMUSIC_TOP.length - 1) {
-          this.showLoading = false
-        }
-      }
-    },
+    // _getTopList () {
+    //   for (let i = 0; i < YUNMUSIC_TOP.length; i++) {
+    //     getTop(YUNMUSIC_TOP[i]).then((res) => {
+    //       let list = res.data.playlist
+    //       list.top = res.data.playlist.tracks.slice(0, 3)
+    //       this.yunTopList.push(list)
+    //       // console.log(list)
+    //     })
+    //     if (i === YUNMUSIC_TOP.length - 1) {
+    //       this.showLoading = false
+    //     }
+    //   }
+    // },
     ...mapMutations({
       setTopList: 'SET_TOP_LIST'
     })
   },
   components: {
-    Scroll,
-    Loading
+    Scroll
+    // Loading
   }
 }
 </script>

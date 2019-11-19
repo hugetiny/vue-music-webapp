@@ -2,14 +2,14 @@
   <div class="recommend" ref="recommend" >
     <scroll class="recommend-content" ref="scroll" :data="playList">
       <div>
-        <div v-show="banner.length" class="decorate" v-if="banner.length"></div>
-        <div v-if="banner.length" class="slider-wrapper">
-          <slider>
-            <div v-for="item in banner" :key="item.id" @click.stop="selectBanner(item)">
-              <img :src="item.picUrl">
-            </div>
-          </slider>
-        </div>
+<!--        <div v-if="banners" class="decorate" ></div>-->
+<!--        <div v-if="banners" class="slider-wrapper">-->
+<!--          <slider>-->
+<!--            <div  v-for="item in banners" :key="item.encodeId" @click.stop="selectBanner(item)">-->
+<!--              <img  :src="item.imageUrl">-->
+<!--            </div>-->
+<!--          </slider>-->
+<!--        </div>-->
         <div class="recommend-list" ref="recommendList">
           <h1 class="title">推荐歌单</h1>
           <ul>
@@ -49,41 +49,40 @@
 <script>
 import Scroll from 'base/scroll/scroll'
 import Slider from 'base/slider/slider'
-import {getBanner, getRecommendList, getRecommendMusic} from 'api/recommend'
-import {getSongDetail} from 'api/search'
-import {createRecommendSong} from 'common/js/song'
-import {ERR_OK} from 'common/js/config'
-import {mapMutations, mapActions} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
 import {playlistMixin} from 'common/js/mixin'
 
 export default {
   mixins: [playlistMixin],
-  data () {
-    return {
-      banner: [],
-      playList: [],
-      recommendMusic: []
-    }
-  },
+  computed: mapState({
+    banners: state => state.apis.banners,
+    playList: state => state.apis.playList,
+    recommendMusic: state => state.apis.recommendMusic
+  }),
+  // computed: {...mapState('apis', [
+  //   'banners', 'playList', 'recommendMusic'
+  // ]
+  // )},
   created () {
-    this._getBanner()
-    this._getRecommendList()
-    this._getRecommendMusic()
-    // this.$refs.recommendList.style.
+    this.$store.dispatch('banner')
+    this.$store.dispatch('personalized')
+    this.$store.dispatch('personalizedNewsong')
   },
   methods: {
     // firstPlay () {
     //   console.log('firstPlay')
     //   this.$refs.audio.play()
     // },
+
     selectBanner (item) {
+      console.log(item)
       let regHttp = /^http/
       let regSong = /\/song\?id/
       if (regHttp.test(item.url)) {
         window.open(item.url)
       }
       if (regSong.test(item.url)) {
-        getSongDetail(item.targetId).then((res) => {
+        this.$store.dispatch('getSongDetail', item.targetId).then((res) => {
           let m = res.data.songs[0]
           let song = {
             id: m.id,
@@ -112,42 +111,20 @@ export default {
       // console.log(item)
       this.setMuiscList(item)
     },
-    _getBanner () {
-      getBanner().then((res) => {
-        if (res.status === ERR_OK) {
-          // let list = res.data.banners.map((item) => {
-          //   if (item.)
-          // })
-          let list = res.data.banners
-          this.banner = list.splice(4)
-          // console.log(this.banner)
-        } else {
-          console.error('Banner 获取失败')
-        }
-      })
-    },
-    _getRecommendList () {
-      getRecommendList().then((res) => {
-        if (res.status === ERR_OK) {
-          this.playList = res.data.result
-        } else {
-          console.error('getRecommendList 获取失败')
-        }
-      })
-    },
-    _getRecommendMusic () {
-      getRecommendMusic().then((res) => {
-        if (res.status === ERR_OK) {
-          let list = res.data.result.map((item) => {
-            return createRecommendSong(item)
-          })
-          list.splice(9)
-          this.recommendMusic = list
-        } else {
-          console.error('getRecommendMusic 获取失败')
-        }
-      })
-    },
+    // _getRecommendMusic () {
+    //   personalizedNewsong()
+    //     .then((res) => {
+    //       if (res.status === ERR_OK) {
+    //         let list = res.data.result.map((item) => {
+    //           return newSong(item)
+    //         })
+    //         list.splice(9)
+    //         this.recommendMusic = list
+    //       } else {
+    //         console.error('getRecommendMusic 获取失败')
+    //       }
+    //     })
+    // },
     ...mapMutations({
       setMuiscList: 'SET_MUSIC_LIST',
       setFullScreen: 'SET_FULL_SCREEN'
@@ -176,13 +153,17 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition-duration: 0ms;
+    transform: translate(0px, 0px) translateZ(0px);
     .decorate {
       position: absolute;
       top: -30vh;
       z-index: -10;
       background: $color-theme;
       width: 100%;
-      height: 50vh;
+      height: 46vh;
       vertical-align: inherit;
     }
     .slider-wrapper {

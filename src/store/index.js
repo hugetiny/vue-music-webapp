@@ -1,20 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as actions from './actions'
-import * as getters from './getters'
-import state from './state'
-import mutations from './mutations'
-// import createLogger from 'vuex/dist/logger'
+
+import modules from './modules'
 
 Vue.use(Vuex)
 
-// const debug = process.env.NOD_ENV !== 'production'
+/*
+ * If not building with SSR mode, you can
+ * directly export the Store instantiation
+ */
 
-export default new Vuex.Store({
-  actions,
-  getters,
-  state,
-  mutations
-  // strict: debug,
-  // plugins: debug ? [createLogger()] : []
-})
+export default function (/* { ssrContext } */) {
+  const Store = new Vuex.Store({
+    modules,
+    // enable strict mode (adds overhead!)
+    // for dev mode only
+    strict: process.env.DEV
+  })
+
+  return Store
+}

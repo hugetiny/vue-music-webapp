@@ -35,7 +35,6 @@
 <script>
 import Loading from 'base/loading/loading'
 import Singer from 'common/js/singer'
-import {getSearchSongs, getSearchSuggest, getSongDetail} from 'api/search'
 import {createSearchSong} from 'common/js/song'
 import {mapMutations, mapActions} from 'vuex'
 
@@ -94,7 +93,7 @@ export default {
       this.$emit('select')
     },
     selectSong (item) {
-      getSongDetail(item.id).then((res) => {
+      this.$store.dispatch('getSongDetail', item.id).then((res) => {
         item.image = res.data.songs[0].al.picUrl
         this.insertSong(item)
         // console.log(item.image)
@@ -107,49 +106,59 @@ export default {
     //   this.$emit('refresh')
     // },
     search () {
-      this.searchShow = false
-      this.haveMore = true
-      getSearchSongs(this.query, this.page).then((res) => {
-        if (!res.data.result.songs) {
-          this.haveMore = false
-          return
-        }
-        let list = res.data.result.songs
-        let ret = []
-        list.forEach((item) => {
-          ret.push(createSearchSong(item))
-        })
-        this.songs = ret
-        this.$emit('refresh')
-      })
-      this.page += 30
-      getSearchSuggest(this.query).then((res) => {
-        this.suggest = res.data.result
-      })
-    },
-    searchMore () {
-      console.log('searchMore')
       if (!this.haveMore) {
         return
       }
-      if (!this.songs.length) {
-        return
-      }
-      getSearchSongs(this.query, this.page).then((res) => {
-        let list = res.data.result.songs
-        if (!res.data.result.songs) {
-          this.haveMore = false
-          return
+      this.searchShow = false
+      this.haveMore = true
+      let songs = []
+      this.$store.dispatch('getSearchSongs', {
+        name: this.query,
+        page: this.page
+      }).then((res) => {
+        for (let p in res.data.data) {
+          songs.push(...res.data.data[p].songs)
         }
-        let ret = []
-        list.forEach((item) => {
-          ret.push(createSearchSong(item))
-        })
-        this.songs = this.songs.concat(ret)
-        this.$emit('refresh')
-        this.page += 30
+        if (songs !== []) {
+          let ret = []
+          songs.forEach((item) => {
+            ret.push(createSearchSong(item))
+          })
+          this.songs = this.songs.concat(ret)
+          this.$emit('refresh')
+        } else {
+          this.haveMore = false
+        }
+      })
+      this.page += 30
+      this.$store.dispatch('getSearchSuggest', this.query).then((res) => {
+        console.log(res.data)
+        this.suggest = res.data.result
       })
     },
+    // searchMore () {
+    //   console.log('searchMore')
+    //   if (!this.haveMore) {
+    //     return
+    //   }
+    //   if (!this.songs.length) {
+    //     return
+    //   }
+    //   getSearchSongs(this.query, this.page).then((res) => {
+    //     let list = res.data.result.songs
+    //     if (!res.data.result.songs) {
+    //       this.haveMore = false
+    //       return
+    //     }
+    //     let ret = []
+    //     list.forEach((item) => {
+    //       ret.push(createSearchSong(item))
+    //     })
+    //     this.songs = this.songs.concat(ret)
+    //     this.$emit('refresh')
+    //     this.page += 30
+    //   })
+    // },
     ...mapMutations({
       setSinger: 'SET_SINGER',
       setMusicList: 'SET_MUSIC_LIST'
